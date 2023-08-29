@@ -1,0 +1,135 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>P2P collector</title>
+    <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'app/image/logo-coin.png' %}">
+
+</head>
+<body>
+<div class="container">
+
+    <header>
+        <div class="fixed-header">
+            <div class="header-container">
+                <div class="logo">
+                    <a href="{% url 'home' %}"><img src="{% static 'app/image/logo-coin.gif' %}" alt="bitcoin-logo"></a>
+                    <a href="{% url 'home' %}">P2P collector</a>
+                </div>
+
+
+                <div class="user-button">
+                    {% if request.user.is_authenticated %}
+                    <div>{{ user.username }}</div>
+                    <div><a href="{% url 'logout' %}">
+                        <img id="logout" src="{% static 'app/image/logout.png' %}" alt="logout">
+                    </a>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'login' %}">
+                        <button id="login-button">
+                            Log in
+                        </button>
+                    </a>
+                    <a href="{% url 'register' %}">
+                        <button id="register-button">
+                            Sign up
+                        </button>
+                    </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+
+        <!--        <div class="menu">-->
+        <!--            <div class="menu-item">-->
+        <!--                <label class="switch">-->
+
+        <!--                    <input type="checkbox" name="switch-toggle">-->
+        <!--                    <span class="slider"></span>-->
+        <!--                    <span class="text_buy">SELL</span>-->
+        <!--                    <span class="text_sell">BUY</span>-->
+
+        <!--                </label>-->
+        <!--            </div>-->
+
+        <!--            <div class="menu-item">-->
+        <!--                <div class="dropdown">-->
+        <!--                    <div class="select">-->
+        <!--                        <span class="selected">USDT</span>-->
+        <!--                        <div class="caret"></div>-->
+        <!--                    </div>-->
+        <!--                    <ul class="drop_menu">-->
+        <!--                        <li class="active">USDT</li>-->
+        <!--                        <li>BTC</li>-->
+        <!--                        <li>ETH</li>-->
+        <!--                        <li>USDC</li>-->
+        <!--                    </ul>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            <div class="menu-item">-->
+        <!--                <div class="dropdown">-->
+        <!--                    <div class="select">-->
+        <!--                        <span class="selected">USD</span>-->
+        <!--                        <div class="caret"></div>-->
+        <!--                    </div>-->
+        <!--                    <ul class="drop_menu">-->
+        <!--                        <li class="active">USD</li>-->
+        <!--                        <li>EUR</li>-->
+        <!--                        <li>RUB</li>-->
+        <!--                    </ul>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            <div class="menu-item">-->
+        <!--                <div class="dropdown">-->
+        <!--                    <div class="select">-->
+        <!--                        <span class="selected">Bank transfer</span>-->
+        <!--                        <div class="caret"></div>-->
+        <!--                    </div>-->
+        <!--                    <ul class="drop_menu">-->
+        <!--                        <li class="active">Bank transfer</li>-->
+        <!--                        <li>Rosbank</li>-->
+        <!--                        <li>Tinkoff</li>-->
+        <!--                    </ul>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            <div class="menu-item">-->
+        <!--                <div class="dropdown">-->
+        <!--                    <div class="select">-->
+        <!--                        <span class="selected">30 sec</span>-->
+        <!--                        <div class="caret"></div>-->
+        <!--                    </div>-->
+        <!--                    <ul class="drop_menu">-->
+        <!--                        <li>10sec</li>-->
+        <!--                        <li class="active">30 sec</li>-->
+        <!--                        <li>1 min</li>-->
+        <!--                    </ul>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+
+    </header>
+
+    <main>
+        <section class="p2p-deals">
+            {% block content %}
+            {% endblock %}
+        </section>
+    </main>
+
+</div>
+
+{% block footer %}
+{% endblock %}
+
+<script src="{% static 'app/js/drop_menu.js' %}"></script>
+
+</body>
+</html>
