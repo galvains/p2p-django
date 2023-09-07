@@ -84,10 +84,10 @@ WSGI_APPLICATION = 'p2p_project.wsgi.application'
 
 ssh_tunnel = SSHTunnelForwarder(
     (os.getenv('SERVER_IP'), int(os.getenv("SSH_PORT"))),
-    ssh_pkey=os.getenv('SSH_PKEY'),
+    ssh_private_key=os.getenv('SSH_PKEY'),
     ssh_username=os.getenv('SSH_USERNAME'),
+    ssh_password='',
     remote_bind_address=('localhost', int(os.getenv('REMOTE_BIND_ADDRESS'))),
-    allow_agent=False
 )
 
 ssh_tunnel.start()
