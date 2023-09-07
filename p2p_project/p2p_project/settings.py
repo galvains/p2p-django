@@ -87,6 +87,7 @@ ssh_tunnel = SSHTunnelForwarder(
     ssh_pkey=os.getenv('SSH_PKEY'),
     ssh_username=os.getenv('SSH_USERNAME'),
     remote_bind_address=('localhost', int(os.getenv('REMOTE_BIND_ADDRESS'))),
+    allow_agent=False
 )
 
 ssh_tunnel.start()
