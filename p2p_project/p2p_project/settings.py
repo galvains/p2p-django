@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 
 from sshtunnel import SSHTunnelForwarder
+import paramiko
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -86,7 +87,8 @@ ssh_tunnel = SSHTunnelForwarder(
     (os.getenv('SERVER_IP'), int(os.getenv("SSH_PORT"))),
     ssh_private_key=os.getenv('SSH_PKEY'),
     ssh_username=os.getenv('SSH_USERNAME'),
-    ssh_password='',
+    ssh_private_key_password=os.getenv('SSH_PASSWORD'),
+    ssh_password=os.getenv('DATABASE_PASSWORD'),
     remote_bind_address=('localhost', int(os.getenv('REMOTE_BIND_ADDRESS'))),
 )
 
