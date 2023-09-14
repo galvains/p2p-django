@@ -58,7 +58,7 @@ MIDDLEWARE = [
 
 CSRF_TRUSTED_ORIGINS = ["https://p2p-django-production.up.railway.app", "https://dev.p2p-collector.pw",
                         "https://dev.p2p-collector.ru"]
-CSRF_COOKIE_DOMAIN = '.up.railway.app'
+CSRF_COOKIE_DOMAIN = '.p2p-collector.pw'
 CSRF_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'p2p_project.urls'
