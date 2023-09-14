@@ -56,7 +56,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CSRF_TRUSTED_ORIGINS = ["https://p2p-django-production.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = ["https://p2p-django-production.up.railway.app", "https://dev.p2p-collector.pw",
+                        "https://dev.p2p-collector.ru"]
 CSRF_COOKIE_DOMAIN = '.up.railway.app'
 CSRF_COOKIE_SECURE = True
 
