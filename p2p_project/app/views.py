@@ -1,59 +1,18 @@
 from django.contrib.auth import logout
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.template import RequestContext
 from django.urls import reverse_lazy
-from django.views.generic import ListView, View, TemplateView, CreateView, UpdateView, FormView
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-
-from django_tables2 import RequestConfig, LazyPaginator
+from django.views.generic import ListView, View, TemplateView, CreateView
+from django.core.paginator import Paginator
 
 from .models import *
 from .utils import *
 from .forms import *
 
 
-# def home(request):
-#     tickets = TicketsTable.objects.all()
-#     tot = tickets.count()
-
-# if not request.method == 'POST':
-#     if 'search-persons-post' in request.session:
-#         request.POST = request.session['search-persons-post']
-#         request.method = 'POST'
-#
-# if request.method == 'POST':
-#     form = FilterForm(request.POST)
-#     request.session['search-persons-post'] = request.POST
-#     if form.is_valid():
-#         coin = form.cleaned_data['coin']
-#         currency = form.cleaned_data['currency']
-#         trade_type = form.cleaned_data['trade_type']
-#
-#         tickets = TicketsTable.objects.filter(coin=coin, currency=currency, trade_type=trade_type)
-#
-#         # page = request.GET.get('page', 1)
-#         # paginator = Paginator(tickets, 15)
-#         # page_object = paginator.page(page)
-# else:
-#     form = FilterForm()
-#
-# table = TicketsTable(tickets)
-# RequestConfig(request, paginate={"paginator_class": LazyPaginator}).configure(table)
-#
-# context = {
-#     'table': table,
-#     'search_tot': tickets.count(),
-#     'form': form,
-#     'tot': tot,
-# }
-#
-# return render(request, 'app/tickets.html', context)
-
 class Home(TemplateView):
-    template_name = 'app/face.html'
+    # template_name = 'app/face.html'
+    template_name = 'app/landing.html'
 
 
 class Filter(ListView):
@@ -64,12 +23,13 @@ class Filter(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        return TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type='BUY').order_by(
-            'time_create')
+        return TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).order_by(
+            'price')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = FilterForm()
+        context['title'] = 'Tickets'
         return context
 
     def post(self, request, *args, **kwargs):
@@ -99,8 +59,14 @@ class Filter(ListView):
 
 class Register(CreateView):
     form_class = RegisterUserForm
-    template_name = 'app/registration.html'
+    template_name = 'app/login.html'
     success_url = reverse_lazy('filter')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['data'] = 'Register'
+        context['title'] = 'Register'
+        return context
 
 
 class Login(LoginView):
@@ -109,6 +75,21 @@ class Login(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('filter')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['data'] = 'Login'
+        context['title'] = 'Login'
+        return context
+
+
+class Donate(TemplateView):
+    template_name = 'app/donate.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Donate'
+        return context
 
 
 def logout_user(request):

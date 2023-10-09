@@ -1,39 +1,47 @@
-{% extends 'app/index.html' %}
+{% extends 'app/base.html' %}
 {% load static %}
 
-{% block content %}
+{% block tickets %}
+<div class="container">
+    <main>
+        <section class="p2p-deals">
+            <header>
+                <form action="{% url 'filter' %}" method="post" enctype="multipart/form-data">
+                    <div class="menu">
+                        {% csrf_token %}
+                        {% for f in form %}
 
-<header>
-    <form action="{% url 'filter' %}" method="post" enctype="multipart/form-data">
-        <div class="menu">
-            {% csrf_token %}
-            {% for f in form %}
+                        <div class="select">
+                            {{ f }}
+                        </div>
 
-            <div class="select">
-                {{ f }}
-            </div>
+                        {% endfor %}
+                        <div class="search-button">
+                            <button type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </header>
 
-            {% endfor %}
-            <div class="search-button">
-                <button type="submit">Search</button>
-            </div>
-        </div>
-    </form>
-</header>
 
-{% for tick in tickets %}
+            {% if tickets %}
+            {% for tick in tickets %}
+            <div class="spinner-grow text-muted"></div>
 
-<div class="deal-card">
 
-    {% if tick.exchange_id == 1 %}
-    <div class="exchange_block" style="background: #E7BB41;"></div>
-    {% elif tick.exchange_id == 2 %}
-    <div class="exchange_block" style="background: #17181D;"></div>
-    {% else %}
-    <div class="exchange_block" style="background: #4D21B3;"></div>
-    {% endif %}
+            <div class="deal-card">
 
-    <div class="title info-block">
+                {% if tick.exchange_id == 1 %}
+                <div class="exchange_block" style="background: #E7BB41;"></div>
+                {% elif tick.exchange_id == 2 %}
+                <div class="exchange_block" style="background: #ffb11a;"></div>
+                {% elif tick.exchange_id == 3 %}
+                <div class="exchange_block" style="background: #4D21B3;"></div>
+                {% elif tick.exchange_id == 4 %}
+                <div class="exchange_block" style="background: #000;"></div>
+                {% endif %}
+
+                <div class="title info-block">
         <span class="amount">
             <span class="bold">{{ tick.nick_name }}</span><br>
             {% if tick.exchange_id == 3 %}
@@ -42,15 +50,15 @@
             <span class="transparent">{{ tick.orders }} Order(s) | {{ tick.rate }} %</span>
             {% endif %}
         </span>
-    </div>
+                </div>
 
-    <div class="price info-block">
+                <div class="price info-block">
         <span class="amount">
             <span class="bold">{{ tick.price }}</span> <span class="transparent">{{ tick.currency }}</span>
         </span>
-    </div>
+                </div>
 
-    <div class="limit info-block">
+                <div class="limit info-block">
         <span class="amount">
             <span class="transparent">Available</span> <span class="bold">
                 {{ tick.available }}
@@ -61,94 +69,85 @@
             </span>
             <span class="transparent">{{ tick.currency }}</span>
         </span>
-    </div>
+                </div>
 
-    <div class="payment info-block">
+                <div class="payment info-block">
         <span class="tooltip amount" title="{{ tick.pay_methods }}">
             <span class="transparent">
                 Payment
                 <img src="{% static 'app/image/quest.png' %}" alt="quest">
             </span>
         </span>
-    </div>
+                </div>
 
-    <div class="button-block amount">
+                <div class="button-block amount">
 
-        {% if tick.trade_type == 'SELL' %}
-        <button onclick="window.location.href='{{ tick.link }}';" style="background: #FF6666;"
-                onmouseover="this.style.background = '#fc8080'"
-                onmouseout="this.style.background = '#FF6666'">
-            {{ tick.trade_type }} {{ tick.coin }}
-        </button>
+                    {% if tick.trade_type is False %}
+                    <button onclick="window.open('{{ tick.link }}', '_blank');" style="background: #FF6666;"
+                            onmouseover="this.style.background = '#fc8080'"
+                            onmouseout="this.style.background = '#FF6666'">
+                        SELL {{ tick.coin }}
+                    </button>
 
-        {% else %}
-        <button onclick="window.location.href='{{ tick.link }}';" style="background: #77DD77;"
-                onmouseover="this.style.background = '#8de38d'"
-                onmouseout="this.style.background = '#77DD77'">
-            {{ tick.trade_type }} {{ tick.coin }}
-        </button>
+                    {% else %}
+                    <button onclick="window.open('{{ tick.link }}', '_blank');" style="background: #77DD77;"
+                            onmouseover="this.style.background = '#8de38d'"
+                            onmouseout="this.style.background = '#77DD77'">
+                        BUY {{ tick.coin }}
+                    </button>
 
-        {% endif %}
-    </div>
-</div>
-
-{% endfor %}
-<div class="footer">
-    <div class="pagination">
-        {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">&#8249;</a>
-        {% endif %}
-
-        {% if page_obj.number > 3 %}
-        <a href="?page=1">1</a>
-        {% if page_obj.number > 4 %}
-        <span class="ellipsis">...</span>
-        {% endif %}
-        {% endif %}
-
-        {% for num in page_obj.paginator.page_range %}
-        {% if num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
-        {% if page_obj.number == num %}
-        <span class="current-page">{{ num }}</span>
-        {% else %}
-        <a href="?page={{ num }}">{{ num }}</a>
-        {% endif %}
-        {% endif %}
-        {% endfor %}
-
-        {% if page_obj.number < page_obj.paginator.num_pages|add:'-2' %}
-        {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
-        <span class="ellipsis">...</span>
-        {% endif %}
-        <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
-        {% endif %}
-
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">&#8250;</a>
-        {% endif %}
-    </div>
-</div>
-
-
-{% endblock %}
-
-{% block footer %}
-<footer>
-    <div class="container">
-        <div class="author">
-            <img src="{% static 'app/image/new-logo.png' %}" alt="">
-            <p>&copy; 2023 p2p-collector.com. All rights reserved.</p>
-        </div>
-        <div class="author-links">
-            <div class="github">
-                <img src="{% static 'app/image/github-sign.png' %}" alt="github">
-                <a href="https://github.com/galvains" target="_blank">Github</a>
+                    {% endif %}
+                </div>
             </div>
-            <div class="telegram">
-                <img src="{% static 'app/image/telegram.png' %}" alt="telegram">
-                <a href="https://t.me/yarik03k" target="_blank">Telegram</a>
+            {% endfor %}
+
+            {% else %}
+            <span class="not-tickets">
+                <h1>Deals not found, change collection parameters.</h1>
+            </span>
+            {% endif %}
+
+            {% if page_obj.paginator.num_pages > 1 %}
+            <div class="footer">
+                <div class="pagination">
+
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">&#8249;</a>
+                    {% endif %}
+
+                    {% if page_obj.number > 3 %}
+                    <a href="?page=1">1</a>
+                    {% if page_obj.number > 4 %}
+                    <span class="ellipsis">...</span>
+                    {% endif %}
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+                    {% if page_obj.number == num %}
+                    <span class="current-page">{{ num }}</span>
+                    {% else %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.number < page_obj.paginator.num_pages|add:'-2' %}
+                    {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
+                    <span class="ellipsis">...</span>
+                    {% endif %}
+                    <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">&#8250;</a>
+                    {% endif %}
+
+                </div>
+                {% endif %}
             </div>
-        </div>
-    </div>
-</footer>
+
+        </section>
+    </main>
+</div>
 {% endblock %}

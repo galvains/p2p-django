@@ -15,7 +15,6 @@ import os
 from pathlib import Path
 
 from sshtunnel import SSHTunnelForwarder
-import paramiko
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,14 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whitenoise.runserver_nostatic',  # <-
+    'whitenoise.runserver_nostatic',  # <- app for staticfiles
     'app.apps.AppConfig',
     'widget_tweaks',
+    'captcha',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # <-
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # <- middleware for staticfiles
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,9 +56,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# csfr options for deployment project (and trusted domains)
 CSRF_TRUSTED_ORIGINS = ["https://p2p-django-production.up.railway.app", "https://dev.p2p-collector.pw",
-                        "https://dev.p2p-collector.ru"]
-CSRF_COOKIE_DOMAIN = '.p2p-collector.pw'
+                        "https://dev.p2p-collector.ru", "http://127.0.0.1:8000", "http://localhost:8000"]
+# CSRF_COOKIE_DOMAIN = '.p2p-collector.pw'
+CSRF_COOKIE_DOMAIN = 'localhost'
 CSRF_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'p2p_project.urls'
@@ -66,7 +68,8 @@ ROOT_URLCONF = 'p2p_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        # 'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,28 +84,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'p2p_project.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-ssh_tunnel = SSHTunnelForwarder(
-    (os.getenv('SERVER_IP'), int(os.getenv("SSH_PORT"))),
-    ssh_private_key=os.getenv('SSH_PKEY'),
-    ssh_username=os.getenv('SSH_USERNAME'),
-    ssh_private_key_password=os.getenv('SSH_PASSWORD'),
-    ssh_password=os.getenv('DATABASE_PASSWORD'),
-    remote_bind_address=('localhost', int(os.getenv('REMOTE_BIND_ADDRESS'))),
-)
-
-ssh_tunnel.start()
+# ssh tunnel for connect to remove database
+# ssh_tunnel = SSHTunnelForwarder(
+#     (os.getenv('SERVER_IP'), int(os.getenv("SSH_PORT"))),
+#     ssh_private_key=os.getenv('SSH_PKEY'),
+#     ssh_username=os.getenv('SSH_USERNAME'),
+#     ssh_private_key_password=os.getenv('SSH_PASSWORD'),
+#     ssh_password=os.getenv('DATABASE_PASSWORD'),
+#     remote_bind_address=('localhost', int(os.getenv('REMOTE_BIND_ADDRESS'))),
+# )
+#
+# ssh_tunnel.start()
 
 DATABASES = {
     "default": {
+        # "ENGINE": "django.db.backends.postgresql",
+        # "NAME": os.getenv('DATABASE_NAME'),
+        # "USER": os.getenv('DATABASE_USER'),
+        # "PASSWORD": os.getenv('DATABASE_PASSWORD'),
+        # "HOST": "localhost",
+        # "PORT": ssh_tunnel.local_bind_port,
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv('DATABASE_NAME'),
-        "USER": os.getenv('DATABASE_USER'),
-        "PASSWORD": os.getenv('DATABASE_PASSWORD'),
+        "NAME": 'collector',
+        "USER": 'yarik',
+        "PASSWORD": 'SinoptikFrimeComyarIk',
         "HOST": "localhost",
-        "PORT": ssh_tunnel.local_bind_port,
+        "PORT": '5432',
     },
 }
 
@@ -149,3 +156,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# recaptcha
+RECAPTCHA_PUBLIC_KEY = '6LfZP24oAAAAALqmYfxVLWBe9gW6P8giVkLLSp8-'
+RECAPTCHA_PRIVATE_KEY = '6LfZP24oAAAAAAWSyeVyqeowT5RK4_vm-HlLqggQ'

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class TicketsTable(models.Model):
@@ -12,16 +13,20 @@ class TicketsTable(models.Model):
     pay_methods = models.TextField()
     currency = models.CharField(max_length=5)
     coin = models.CharField(max_length=5)
-    trade_type = models.CharField(max_length=5)
+    trade_type = models.BooleanField()
     link = models.URLField()
     time_create = models.DateTimeField()
     exchange = models.ForeignKey('ExchangeTable', on_delete=models.PROTECT)
 
     class Meta:
-        ordering = ['-time_create']
+        ordering = ['-price', '-time_create']
+        verbose_name_plural = "Tickets table"
 
     def __str__(self):
         return self.nick_name
+
+    def get_absolute_url(self):
+        return reverse('ticket', kwargs={'post_id': self.pk})
 
 
 class ExchangeTable(models.Model):

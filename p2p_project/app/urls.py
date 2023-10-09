@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import *
 
 urlpatterns = [
@@ -7,4 +7,5 @@ urlpatterns = [
     path('login/', Login.as_view(), name='login'),
     path('logout/', logout_user, name='logout'),
     path('register/', Register.as_view(), name='register'),
+    path('donate/', Donate.as_view(), name='donate'),
 ]

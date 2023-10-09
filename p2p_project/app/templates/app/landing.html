@@ -1,0 +1,107 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'app/css/landing.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'app/image/logo.svg' %}">
+    <title>P2P collector</title>
+</head>
+<body>
+<!-- Верхняя фиксированная панель -->
+<div class="fixed-header">
+    <div class="logo">
+        <a href="{% url 'home' %}">P2P collector</a>
+    </div>
+
+    <div class="user-button">
+        {% if request.user.is_authenticated %}
+        <div>{{ user.username }}</div>
+        <div><a href="{% url 'logout' %}">
+            <img id="logout" src="{% static 'app/image/logout.png' %}" alt="logout">
+        </a>
+        </div>
+        {% else %}
+        <a href="{% url 'login' %}">
+            <button id="login-button">
+                Log in
+            </button>
+        </a>
+        <a href="{% url 'register' %}">
+            <button id="register-button">
+                Sign up
+            </button>
+        </a>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- Центральный блок -->
+<div class="center-content">
+    <div class="project-details-left">
+        <h2>Buy cryptocurrency profitably with P2P collector</h2>
+        <div class="project-buttons">
+            <a href="{% url 'filter' %}">
+                <button class="cyberpunk-button">
+                    To collect!
+                </button>
+            </a>
+            <a href="{% url 'register' %}">
+                <button class="cyberpunk-button-reg">
+                    Sign up
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <div class="project-logo">
+        <img src="{% static 'app/image/logo.svg' %}" alt="Изображение проекта">
+    </div>
+
+    <div class="project-details-right">
+        <p>It is a powerful tool for parsing and analyzing transactions in the P2P (peer-to-peer) segment of
+            cryptocurrency exchanges, which allows users to find the best opportunities for cryptocurrency
+            exchanges.</p>
+    </div>
+
+</div>
+
+<!-- Нижняя фиксированная панель с курсами криптовалют -->
+<!--<div class="bottom-panel">-->
+<!--    <marquee behavior="scroll" direction="left">-->
+<!--        <span class="crypto-course">BTC: $45,000</span>-->
+<!--        <span class="crypto-course">here will be the current rate of cryptocurrencies <3</span>-->
+<!--        <span class="crypto-course">here will be the current rate of cryptocurrencies <3</span>-->
+<!--        <span class="crypto-course">here will be the current rate of cryptocurrencies <3</span>-->
+<!--    </marquee>-->
+<!--</div>-->
+
+<div class="ticker-container " style="position: fixed;">
+    <div class="ticker-viewer ">
+        <div class="ticker-scroll infinite-animation ">
+            <a class="ticker-item">BTC $27&nbsp;899,00 (-0,26&nbsp;%)</a>
+            <a class="ticker-item">ETH $1&nbsp;631,63 (-0,19&nbsp;%)</a>
+            <a class="ticker-item">OKB $42,89 (-0,14&nbsp;%)</a>
+            <a class="ticker-item">LTC $65,36 (-0,17&nbsp;%)</a>
+            <a class="ticker-item">XRP $0,52 (-0,82&nbsp;%)</a>
+            <a class="ticker-item">BCH $228,65 (-0,72&nbsp;%)</a>
+            <a class="ticker-item">SOL $23,46 (+0,65&nbsp;%)</a>
+        </div>
+
+        <div class="ticker-scroll infinite-animation ">
+            <a class="ticker-item">BTC $27&nbsp;899,00 (-0,26&nbsp;%)</a>
+            <a class="ticker-item">ETH $1&nbsp;631,63 (-0,19&nbsp;%)</a>
+            <a class="ticker-item">OKB $42,89 (-0,14&nbsp;%)</a>
+            <a class="ticker-item">LTC $65,36 (-0,17&nbsp;%)</a>
+            <a class="ticker-item">XRP $0,52 (-0,82&nbsp;%)</a>
+            <a class="ticker-item">BCH $228,65 (-0,72&nbsp;%)</a>
+            <a class="ticker-item">SOL $23,46 (+0,65&nbsp;%)</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

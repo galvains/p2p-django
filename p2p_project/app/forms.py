@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from django.utils.safestring import mark_safe
-from django.utils.translation import gettext, gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
+from captcha.fields import ReCaptchaField
 
 from .models import *
 
@@ -19,8 +19,8 @@ class FilterForm(forms.ModelForm):
         ('EUR', 'EUR'),
     ]
     CHOICES_TRADE_TYPE = [
-        ('BUY', 'BUY'),
-        ('SELL', 'SELL'),
+        (True, 'BUY'),
+        (False, 'SELL'),
     ]
 
     coin = forms.ChoiceField(choices=CHOICES_COINS, widget=forms.Select(attrs={'class': 'select'}))
@@ -33,6 +33,8 @@ class FilterForm(forms.ModelForm):
 
 
 class RegisterUserForm(UserCreationForm):
+    captcha = ReCaptchaField()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'placeholder': _('Username')})
@@ -46,6 +48,7 @@ class RegisterUserForm(UserCreationForm):
 
 
 class LoginUserForm(AuthenticationForm):
+    captcha = ReCaptchaField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

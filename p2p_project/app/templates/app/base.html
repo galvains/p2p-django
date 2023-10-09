@@ -1,0 +1,69 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <link rel="icon" type="image/png" href="{% static 'app/image/logo.svg' %}">
+    <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
+
+</head>
+<body>
+<div class="fixed-header">
+    <div class="logo">
+        <a href="{% url 'home' %}">P2P collector</a>
+    </div>
+
+    <div class="user-button">
+        {% if request.user.is_authenticated %}
+        <div>{{ user.username }}</div>
+        <div><a href="{% url 'logout' %}">
+            <img id="logout" src="{% static 'app/image/logout.png' %}" alt="logout">
+        </a>
+        </div>
+        {% else %}
+        <a href="{% url 'login' %}">
+            <button id="login-button">
+                Log in
+            </button>
+        </a>
+        <a href="{% url 'register' %}">
+            <button id="register-button">
+                Sign up
+            </button>
+        </a>
+        {% endif %}
+
+    </div>
+</div>
+
+{% block tickets %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+<footer>
+    <div class="container">
+        <div class="author">
+            <img src="{% static 'app/image/logo.svg' %}" alt="">
+            <p>&copy; 2023 dev.p2p-collector.pw. All rights reserved.</p>
+        </div>
+        <div class="author-links">
+            <div class="donate">
+                <img src="{% static 'app/image/donate.png' %}" alt="donate">
+                <a href="{% url 'donate' %}" target="_blank">Donate</a>
+            </div>
+            <div class="github">
+                <img src="{% static 'app/image/github-sign.png' %}" alt="github">
+                <a href="https://github.com/galvains" target="_blank">Github</a>
+            </div>
+            <div class="telegram">
+                <img src="{% static 'app/image/telegram.png' %}" alt="telegram">
+                <a href="https://t.me/yarik03k" target="_blank">Telegram</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
