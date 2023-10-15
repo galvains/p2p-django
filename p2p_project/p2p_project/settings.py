@@ -59,8 +59,8 @@ MIDDLEWARE = [
 # csfr options for deployment project (and trusted domains)
 CSRF_TRUSTED_ORIGINS = ["https://p2p-django-production.up.railway.app", "https://dev.p2p-collector.pw",
                         "https://dev.p2p-collector.ru", "http://127.0.0.1:8000", "http://localhost:8000"]
-# CSRF_COOKIE_DOMAIN = '.p2p-collector.pw'
-CSRF_COOKIE_DOMAIN = 'localhost'
+CSRF_COOKIE_DOMAIN = '.p2p-collector.pw'
+# CSRF_COOKIE_DOMAIN = 'localhost'
 CSRF_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'p2p_project.urls'
@@ -85,31 +85,31 @@ TEMPLATES = [
 WSGI_APPLICATION = 'p2p_project.wsgi.application'
 
 # ssh tunnel for connect to remove database
-# ssh_tunnel = SSHTunnelForwarder(
-#     (os.getenv('SERVER_IP'), int(os.getenv("SSH_PORT"))),
-#     ssh_private_key=os.getenv('SSH_PKEY'),
-#     ssh_username=os.getenv('SSH_USERNAME'),
-#     ssh_private_key_password=os.getenv('SSH_PASSWORD'),
-#     ssh_password=os.getenv('DATABASE_PASSWORD'),
-#     remote_bind_address=('localhost', int(os.getenv('REMOTE_BIND_ADDRESS'))),
-# )
-#
-# ssh_tunnel.start()
+ssh_tunnel = SSHTunnelForwarder(
+    (os.getenv('SERVER_IP'), int(os.getenv("SSH_PORT"))),
+    ssh_private_key=os.getenv('SSH_PKEY'),
+    ssh_username=os.getenv('SSH_USERNAME'),
+    ssh_private_key_password=os.getenv('SSH_PASSWORD'),
+    ssh_password=os.getenv('DATABASE_PASSWORD'),
+    remote_bind_address=('localhost', int(os.getenv('REMOTE_BIND_ADDRESS'))),
+)
+
+ssh_tunnel.start()
 
 DATABASES = {
     "default": {
-        # "ENGINE": "django.db.backends.postgresql",
-        # "NAME": os.getenv('DATABASE_NAME'),
-        # "USER": os.getenv('DATABASE_USER'),
-        # "PASSWORD": os.getenv('DATABASE_PASSWORD'),
-        # "HOST": "localhost",
-        # "PORT": ssh_tunnel.local_bind_port,
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": 'collector',
-        "USER": 'yarik',
-        "PASSWORD": 'SinoptikFrimeComyarIk',
+        "NAME": os.getenv('DATABASE_NAME'),
+        "USER": os.getenv('DATABASE_USER'),
+        "PASSWORD": os.getenv('DATABASE_PASSWORD'),
         "HOST": "localhost",
-        "PORT": '5432',
+        "PORT": ssh_tunnel.local_bind_port,
+        # "ENGINE": "django.db.backends.postgresql",
+        # "NAME": 'collector',
+        # "USER": 'yarik',
+        # "PASSWORD": 'SinoptikFrimeComyarIk',
+        # "HOST": "localhost",
+        # "PORT": '5432',
     },
 }
 
@@ -158,5 +158,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # recaptcha
-RECAPTCHA_PUBLIC_KEY = '6LfZP24oAAAAALqmYfxVLWBe9gW6P8giVkLLSp8-'
-RECAPTCHA_PRIVATE_KEY = '6LfZP24oAAAAAAWSyeVyqeowT5RK4_vm-HlLqggQ'
+# RECAPTCHA_PUBLIC_KEY = '6LfZP24oAAAAALqmYfxVLWBe9gW6P8giVkLLSp8-'
+# RECAPTCHA_PRIVATE_KEY = '6LfZP24oAAAAAAWSyeVyqeowT5RK4_vm-HlLqggQ'
+RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')

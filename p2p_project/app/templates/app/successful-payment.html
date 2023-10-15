@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="{% static 'app/image/logo.svg' %}">
+    <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
+    <title>Thank you</title>
+
+</head>
+<body>
+<div class="reg">
+    <div class="center-content">
+        <p>Thank you ❤️</p>
+        <a href="{% url 'home' %}">
+            <button class="thank-button">To home</button>
+        </a>
+    </div>
+    <script>
+        setTimeout(function() {
+            const button = document.querySelector(".thank-button");
+            button.style.opacity = "1";
+        }, 1500);
+    </script>
+</div>
+
+</body>
+</html>

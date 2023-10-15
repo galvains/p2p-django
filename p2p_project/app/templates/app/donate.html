@@ -3,10 +3,11 @@
 
 {% block content %}
 
-<div class="reg">
-    <div class="registration-form">
-        <h1>donate alert</h1>
-    </div>
+<div class="donate-container">
+    <link href="https://api.cryptocloud.plus/static/widget/v2/css/app.css" rel="stylesheet">
+    <vue-widget shop_id="{{ CLR_SHOP_ID }}" api_key="{{ CLR_CRYPTO_API }}" currency="USD" amount=""
+                locale="en"></vue-widget>
+    <script src="https://api.cryptocloud.plus/static/widget/v2/js/app.js"></script>
 </div>
 
 {% endblock %}

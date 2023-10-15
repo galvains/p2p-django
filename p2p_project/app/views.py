@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
@@ -11,7 +13,6 @@ from .forms import *
 
 
 class Home(TemplateView):
-    # template_name = 'app/face.html'
     template_name = 'app/landing.html'
 
 
@@ -23,8 +24,7 @@ class Filter(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        return TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).order_by(
-            'price')
+        return TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).order_by('price')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,8 +41,10 @@ class Filter(ListView):
             coin = search_query['coin']
             currency = search_query['currency']
             trade_type = search_query['trade_type']
+            sort_filter = search_query['sort']
 
-            tickets = TicketsTable.objects.filter(coin=coin, currency=currency, trade_type=trade_type)
+            tickets = TicketsTable.objects.filter(coin=coin, currency=currency, trade_type=trade_type).order_by(
+                sort_filter)
 
             page = request.GET.get('page', 1)
             paginator = Paginator(tickets, 15)
@@ -89,7 +91,17 @@ class Donate(TemplateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Donate'
+        context['CLR_CRYPTO_API'] = os.getenv("CLR_CRYPTO_API")
+        context['CLR_SHOP_ID'] = os.getenv("CLR_SHOP_ID")
         return context
+
+
+class Success(TemplateView):
+    template_name = 'app/successful-payment.html'
+
+
+class Fail(TemplateView):
+    template_name = 'app/failure-payment.html'
 
 
 def logout_user(request):

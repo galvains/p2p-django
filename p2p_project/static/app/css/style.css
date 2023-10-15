@@ -655,7 +655,6 @@ input[type="checkbox"]:checked + .slider:before {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* background-image: url('../image/back-reg-log.jpg'); */
   background-size: cover;
   background-position: center;
   font-family: Arial, sans-serif;
@@ -776,4 +775,47 @@ footer {
   text-align: center;
 }
 
+.donate-container {
+  max-width: 1100px;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  min-height: 100vh;
+}
 
+
+.center-content {
+  font-family: usuzi;
+  color: #434343;
+  font-size: 40px;
+  justify-content: center;
+  margin: 0;
+  text-align: center;
+}
+
+.center-button {
+  margin-top: 20px;
+}
+
+.thank-button {
+  font-family: usuzi;
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+  border: 2px solid rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+  background-color: #000;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-radius: 7px;
+  cursor: pointer;
+  opacity: 0;
+  transition: 0.5s;
+}
+
+.thank-button:hover {
+  background-color: rgb(240, 240, 240);
+  color: #000;
+}

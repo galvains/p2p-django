@@ -8,4 +8,6 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     path('register/', Register.as_view(), name='register'),
     path('donate/', Donate.as_view(), name='donate'),
+    path('successful-payment/', Success.as_view(), name='success'),
+    path('failure-payment/', Fail.as_view(), name='fail'),
 ]

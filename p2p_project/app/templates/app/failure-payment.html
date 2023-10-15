@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="{% static 'app/image/logo.svg' %}">
+    <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
+    <title>Failure payment</title>
+
+</head>
+<body>
+<div class="reg">
+    <div class="center-content">
+        <p>Please try again</p>
+        <a href="{% url 'donate' %}">
+            <button class="thank-button"  style="opacity:1;">Donate</button>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

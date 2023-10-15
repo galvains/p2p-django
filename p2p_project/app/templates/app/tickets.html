@@ -1,6 +1,7 @@
 {% extends 'app/base.html' %}
 {% load static %}
 
+
 {% block tickets %}
 <div class="container">
     <main>
@@ -10,12 +11,14 @@
                     <div class="menu">
                         {% csrf_token %}
                         {% for f in form %}
+                            <p style="margin:0; font-family: usuzi; color: #858585; font-size: 10px;">{{ f.label }}:</p>
+                            <div style="margin: 7px;">
+                                {{ f }}
+                            </div>
 
-                        <div class="select">
-                            {{ f }}
-                        </div>
 
                         {% endfor %}
+
                         <div class="search-button">
                             <button type="submit">Search</button>
                         </div>

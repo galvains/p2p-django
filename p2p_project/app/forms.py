@@ -22,10 +22,17 @@ class FilterForm(forms.ModelForm):
         (True, 'BUY'),
         (False, 'SELL'),
     ]
+    CHOICES_SORT = [
+        ('price', 'Low price'),
+        ('price', 'High price'),
+        ('time_create', 'Newest'),
+        ('time_create', 'Latest'),
+    ]
 
     coin = forms.ChoiceField(choices=CHOICES_COINS, widget=forms.Select(attrs={'class': 'select'}))
     currency = forms.ChoiceField(choices=CHOICES_CURRENCY, widget=forms.Select(attrs={'class': 'select'}))
     trade_type = forms.ChoiceField(choices=CHOICES_TRADE_TYPE, widget=forms.Select(attrs={'class': 'select'}))
+    sort = forms.ChoiceField(choices=CHOICES_SORT, widget=forms.Select(attrs={'class': 'select'}))
 
     class Meta:
         model = TicketsTable
