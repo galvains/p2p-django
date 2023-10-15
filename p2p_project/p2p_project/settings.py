@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv('DJANGO_DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -58,9 +58,8 @@ MIDDLEWARE = [
 
 # csfr options for deployment project (and trusted domains)
 CSRF_TRUSTED_ORIGINS = ["https://p2p-django-production.up.railway.app", "https://dev.p2p-collector.pw",
-                        "https://dev.p2p-collector.ru", "http://127.0.0.1:8000", "http://localhost:8000"]
+                        "https://dev.p2p-collector.ru"]
 CSRF_COOKIE_DOMAIN = '.p2p-collector.pw'
-# CSRF_COOKIE_DOMAIN = 'localhost'
 CSRF_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'p2p_project.urls'
