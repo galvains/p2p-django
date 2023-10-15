@@ -24,9 +24,9 @@ class FilterForm(forms.ModelForm):
     ]
     CHOICES_SORT = [
         ('price', 'Low price'),
-        ('price', 'High price'),
+        ('-price', 'High price'),
         ('time_create', 'Newest'),
-        ('time_create', 'Latest'),
+        ('-time_create', 'Latest'),
     ]
 
     coin = forms.ChoiceField(choices=CHOICES_COINS, widget=forms.Select(attrs={'class': 'select'}))
