@@ -12,10 +12,10 @@
 
             {% for f in form %}
             <div>{{ f }}</div>
-            <div class="form-error">{{ f.errors }}</div>
+            <div style="margin:0; font-family: usuzi; color: #FF6666; font-size: 10px;">{{ f.errors }}</div>
 
             {% endfor %}
-            <div>{{ form.non_field_errors }}</div>
+            <div style="margin:0; font-family: usuzi; color: #FF6666; font-size: 10px;">{{ form.non_field_errors }}</div>
             <button type="submit">{{ data }}</button>
         </form>
     </div>
