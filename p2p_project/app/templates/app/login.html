@@ -12,10 +12,21 @@
 
             {% for f in form %}
             <div>{{ f }}</div>
-            <div style="margin:0; font-family: usuzi; color: #FF6666; font-size: 10px;">{{ f.errors }}</div>
+
+            {% for error in f.errors %}
+            <div style="color: #FF6666; font-size: 12px;">{{ error }}</div>
+            {% endfor %}
 
             {% endfor %}
-            <div style="margin:0; font-family: usuzi; color: #FF6666; font-size: 10px;">{{ form.non_field_errors }}</div>
+<!--            <div style="margin:0; font-family: usuzi; color: #FF6666; font-size: 12px;">{{ form.non_field_errors }}-->
+<!--            </div>-->
+            {% if form.subject.errors %}
+            <ol style="color: #FF6666; font-size: 12px;">
+                {% for error in form.subject.errors %}
+                <li><strong>{{ error }}</strong></li>
+                {% endfor %}
+            </ol>
+            {% endif %}
             <button type="submit">{{ data }}</button>
         </form>
     </div>
