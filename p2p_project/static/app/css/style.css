@@ -819,3 +819,9 @@ footer {
   background-color: rgb(240, 240, 240);
   color: #000;
 }
+
+.errors-form {
+  margin: 5px;
+  color: #FF6666;
+  font-size: 12px;
+}
