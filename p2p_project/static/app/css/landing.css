@@ -151,6 +151,7 @@ a{
 
 .user-button {
   font-family: usuzi;
+  color: #434343;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
