@@ -59,16 +59,19 @@ MIDDLEWARE = [
 # csfr options for deployment project (and trusted domains)
 CSRF_TRUSTED_ORIGINS = ["https://p2p-django-production.up.railway.app", "https://dev.p2p-collector.pw",
                         "https://dev.p2p-collector.ru", "http://127.0.0.1:8000", "http://localhost:8000"]
-CSRF_COOKIE_DOMAIN = '.p2p-collector.pw'
-# CSRF_COOKIE_DOMAIN = 'localhost'
-CSRF_COOKIE_SECURE = True
+
+if os.getenv('PROD'):
+    CSRF_COOKIE_DOMAIN = '.p2p-collector.pw'
+    CSRF_COOKIE_SECURE = True
+else:
+    CSRF_COOKIE_DOMAIN = 'localhost'
+    CSRF_COOKIE_SECURE = False
 
 ROOT_URLCONF = 'p2p_project.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [BASE_DIR / 'templates'],
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {

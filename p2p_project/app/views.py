@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, View, TemplateView, CreateView
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 
 from .models import *
 from .utils import *
