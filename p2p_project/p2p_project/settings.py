@@ -26,9 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG')
+DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+
 
 ALLOWED_HOSTS = ['*']
+
+INTERNAL_IPS = ['127.0.0.1',]
 
 # Application definition
 
@@ -43,9 +46,11 @@ INSTALLED_APPS = [
     'app.apps.AppConfig',
     'widget_tweaks',
     'captcha',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",  # <- middleware for staticfiles
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -157,3 +162,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # recaptcha
 RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://localhost:6379",
+    }
+}

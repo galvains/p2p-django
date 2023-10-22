@@ -1,4 +1,5 @@
 from django.urls import path, include
+import debug_toolbar
 from .views import *
 
 urlpatterns = [
@@ -10,4 +11,8 @@ urlpatterns = [
     path('donate/', Donate.as_view(), name='donate'),
     path('successful-payment/', Success.as_view(), name='success'),
     path('failure-payment/', Fail.as_view(), name='fail'),
+    path('__debug__/', include(debug_toolbar.urls)),
 ]
+
+
+

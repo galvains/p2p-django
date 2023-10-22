@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, View, TemplateView, CreateView
 from django.core.paginator import Paginator
+from django.core.cache import cache
 from django.http import JsonResponse
 
 from .models import *
@@ -24,8 +25,18 @@ class Filter(ListView):
     context_object_name = 'tickets'
     paginate_by = 15
 
+    LAST_SEARCH_QUERY = dict()
+
     def get_queryset(self):
-        return TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).order_by('price')
+        from_cache_name = 'data'
+        from_cache = cache.get(from_cache_name)
+
+        if from_cache:
+            data = from_cache
+        else:
+            data = TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).order_by('price')
+            cache.set(from_cache_name, data, 40)
+        return data
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -36,16 +47,28 @@ class Filter(ListView):
     def post(self, request, *args, **kwargs):
         form = FilterForm(request.POST)
 
+        from_cache_name = 'data'
+        from_cache = cache.get(from_cache_name)
+
         if form.is_valid():
             search_query = form.cleaned_data
 
-            coin = search_query['coin']
-            currency = search_query['currency']
-            trade_type = search_query['trade_type']
-            sort_filter = search_query['sort']
+            if self.LAST_SEARCH_QUERY == search_query:
+                tickets = from_cache
+            else:
+                coin = search_query['coin']
+                currency = search_query['currency']
+                trade_type = search_query['trade_type']
+                sort_filter = search_query['sort']
 
-            tickets = TicketsTable.objects.filter(coin=coin, currency=currency, trade_type=trade_type).order_by(
-                sort_filter)
+                tickets = TicketsTable.objects.filter(coin=coin, currency=currency, trade_type=trade_type).order_by(
+                    sort_filter)
+                cache.set(from_cache_name, tickets, 30)
+
+                self.LAST_SEARCH_QUERY['coin'] = search_query['coin']
+                self.LAST_SEARCH_QUERY['currency'] = search_query['currency']
+                self.LAST_SEARCH_QUERY['trade_type'] = search_query['trade_type']
+                self.LAST_SEARCH_QUERY['sort'] = search_query['sort']
 
             page = request.GET.get('page', 1)
             paginator = Paginator(tickets, 15)
@@ -108,3 +131,19 @@ class Fail(TemplateView):
 def logout_user(request):
     logout(request)
     return redirect('filter')
+
+
+def custom_page_not_found_view(request, exception):
+    return render(request, "app/error.html", {'type_error': 404})
+
+
+def custom_error_view(request, exception=None):
+    return render(request, "app/error.html", {'type_error': 500})
+
+
+def custom_permission_denied_view(request, exception=None):
+    return render(request, "app/error.html", {'type_error': 403})
+
+
+def custom_bad_request_view(request, exception=None):
+    return render(request, "app/error.html", {'type_error': 400})
