@@ -65,7 +65,7 @@ MIDDLEWARE = [
 CSRF_TRUSTED_ORIGINS = ["https://p2p-django-production.up.railway.app", "https://dev.p2p-collector.pw",
                         "https://dev.p2p-collector.ru", "http://127.0.0.1:8000", "http://localhost:8000"]
 
-if os.getenv('PROD'):
+if os.getenv('PROD') == 'True':
     CSRF_COOKIE_DOMAIN = '.p2p-collector.pw'
     CSRF_COOKIE_SECURE = True
 else:
@@ -96,9 +96,9 @@ WSGI_APPLICATION = 'p2p_project.wsgi.application'
 ssh_tunnel = SSHTunnelForwarder(
     (os.getenv('SERVER_IP'), int(os.getenv("SSH_PORT"))),
     ssh_private_key=os.getenv('SSH_PKEY'),
-    ssh_username=os.getenv('SSH_USERNAME'),
-    ssh_private_key_password=os.getenv('SSH_PASSWORD'),
-    ssh_password=os.getenv('DATABASE_PASSWORD'),
+    ssh_username=os.getenv('USERNAME'),
+    ssh_private_key_password=os.getenv('SSH_PK_PASSWORD'),
+    ssh_password=os.getenv('SSH_PASSWORD'),
     remote_bind_address=('localhost', int(os.getenv('REMOTE_BIND_ADDRESS'))),
 )
 
@@ -108,7 +108,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv('DATABASE_NAME'),
-        "USER": os.getenv('DATABASE_USER'),
+        "USER": os.getenv('DATABASE_USERNAME'),
         "PASSWORD": os.getenv('DATABASE_PASSWORD'),
         "HOST": "localhost",
         "PORT": ssh_tunnel.local_bind_port,
@@ -167,6 +167,9 @@ RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://localhost:6379",
+        "LOCATION": "redis://redis:6379",
+        "OPTIONS": {
+            'db': '1',
+        }
     }
 }

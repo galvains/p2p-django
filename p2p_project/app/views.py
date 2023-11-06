@@ -35,7 +35,7 @@ class Filter(ListView):
             data = from_cache
         else:
             data = TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).order_by('price')
-            cache.set(from_cache_name, data, 40)
+            cache.set(from_cache_name, data, 30)
         return data
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -60,6 +60,7 @@ class Filter(ListView):
                 currency = search_query['currency']
                 trade_type = search_query['trade_type']
                 sort_filter = search_query['sort']
+                auto_refresh = search_query['auto_refresh']
 
                 tickets = TicketsTable.objects.filter(coin=coin, currency=currency, trade_type=trade_type).order_by(
                     sort_filter)
@@ -69,6 +70,7 @@ class Filter(ListView):
                 self.LAST_SEARCH_QUERY['currency'] = search_query['currency']
                 self.LAST_SEARCH_QUERY['trade_type'] = search_query['trade_type']
                 self.LAST_SEARCH_QUERY['sort'] = search_query['sort']
+                self.LAST_SEARCH_QUERY['auto_refresh'] = search_query['auto_refresh']
 
             page = request.GET.get('page', 1)
             paginator = Paginator(tickets, 15)
