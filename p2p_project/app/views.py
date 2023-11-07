@@ -4,10 +4,9 @@ from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, View, TemplateView, CreateView
-from django.core.paginator import Paginator
-from django.core.cache import cache
-from django.http import JsonResponse
+from django.views.generic import ListView, TemplateView, CreateView
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 from .models import *
 from .utils import *
@@ -18,6 +17,27 @@ class Home(TemplateView):
     template_name = 'app/landing.html'
 
 
+class Filter(ListView):
+    model = TicketsTable
+    template_name = 'app/tickets.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['object_list'] = TicketsTable.objects.all()
+        paginator = Paginator(context['object_list'], 20)
+        page = self.request.GET.get('page')
+
+        try:
+            context['object_list'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['object_list'] = paginator.page(1)
+        except EmptyPage:
+            context['object_list'] = paginator.page(paginator.num_pages)
+
+        return context
+
+"""
 class Filter(ListView):
     model = TicketsTable
     template_name = 'app/tickets.html'
@@ -34,7 +54,8 @@ class Filter(ListView):
         if from_cache:
             data = from_cache
         else:
-            data = TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).order_by('price')
+            data = TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).\
+                order_by('price')[:50]
             cache.set(from_cache_name, data, 30)
         return data
 
@@ -83,6 +104,8 @@ class Filter(ListView):
             }
 
             return render(request, self.template_name, context)
+
+"""
 
 
 class Register(CreateView):

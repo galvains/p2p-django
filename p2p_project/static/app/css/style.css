@@ -67,8 +67,9 @@ header {
   padding-bottom: 4.4rem;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
 }
+
 
 .deal-card {
   display: flex;
@@ -323,12 +324,7 @@ input[type="checkbox"]:checked + .slider:before {
 
 /* Paginator ------------------------ */
 .footer {
-  display: flex;
-  justify-content: right;
-  align-items: center;
-  background-color: #fff;
   padding: 10px;
-  border-radius: 7px;
 }
 
 .footer-links {

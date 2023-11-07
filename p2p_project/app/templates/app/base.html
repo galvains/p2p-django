@@ -43,6 +43,43 @@
 {% block content %}
 {% endblock %}
 
+{% block js %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        function ajaxPagination() {
+            $('.pagination a.page-link').each((index, el) => {
+                $(el).click((e) => {
+                    e.preventDefault()
+                    let page_url = $(el).attr('href')
+                    console.log(page_url)
+
+                    $.ajax({
+                        url: page_url,
+                        type: 'GET',
+                        success: (data) => {
+                            $('#deals').empty()
+                            $('#deals').append($(data).find('#deals').html())
+
+                            $('.pagination').empty()
+                            $('.pagination').append($(data).find('.pagination').html())
+
+                        }
+                    })
+                })
+            })
+        }
+
+        $(document).ready(function(){
+            ajaxPagination()
+        })
+
+        $(document).ajaxStop(function(){
+            ajaxPagination()
+        })
+    </script>
+
+{% endblock %}
+
 <footer>
     <div class="container">
         <div class="author">
