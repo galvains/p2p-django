@@ -26,6 +26,9 @@
                 </form>
             </header>
 
+
+            <div id="loader" class="loader hidden"></div>
+
             <div id="deals">
                 {% if object_list %}
                 {% for tick in object_list %}
@@ -119,7 +122,7 @@
                         {% endif %}
 
                         {% if object_list.number > 3 %}
-                        <a class="page-link"href="?page=1">1</a>
+                        <a class="page-link" href="?page=1">1</a>
                         {% if object_list.number > 4 %}
                         <span class="ellipsis">...</span>
                         {% endif %}

@@ -75,7 +75,6 @@ header {
   display: flex;
   justify-content: space-between;
   height: 60px;
-  width: 100%;
   max-width: 100%;
   background-color: #fff;
   border-radius: 7px;
@@ -188,15 +187,14 @@ header {
 /* Menu ------------------------ */
 .menu {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   background-color: #fff;
   margin-top: 30px;
-  padding-inline: 20px;
+  padding-inline: 120px;
   padding-bottom: 10px;
   padding-top: 10px;
   border-radius: 7px;
-  /* width: 100%; */
 }
 
 @media (max-width: 800px) {
@@ -325,6 +323,7 @@ input[type="checkbox"]:checked + .slider:before {
 /* Paginator ------------------------ */
 .footer {
   padding: 10px;
+  width: 100%;
 }
 
 .footer-links {
@@ -821,4 +820,24 @@ footer {
   margin: 5px;
   color: #FF6666;
   font-size: 12px;
+}
+
+
+.loader {
+  border: 10px solid #f3f3f3; /* Light grey */
+  border-top: 10px solid #434343; /* Blue */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1.5s cubic-bezier(1, 0.62, 1, 1) infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 48.64%;
+  transform: translate(-50%, -50%)
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

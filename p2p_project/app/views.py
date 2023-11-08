@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.core.cache import cache
 
 from .models import *
 from .utils import *
@@ -20,12 +20,40 @@ class Home(TemplateView):
 class Filter(ListView):
     model = TicketsTable
     template_name = 'app/tickets.html'
+    object_list = None
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
 
-        context['object_list'] = TicketsTable.objects.all()
-        paginator = Paginator(context['object_list'], 20)
+        SEARCH_QUERY = cache.get('SEARCH_QUERY')
+        REQUEST_FORM = cache.get('REQUEST_FORM')
+
+        context = super().get_context_data(**kwargs)
+        context['form'] = FilterForm(REQUEST_FORM)
+
+        # print(f'SEARCH_QUERY {SEARCH_QUERY}')
+
+        if not SEARCH_QUERY and not object_list:
+            context['object_list'] = TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).order_by(
+                'price')
+
+        elif object_list is None:
+            coin = SEARCH_QUERY['coin']
+            currency = SEARCH_QUERY['currency']
+            trade_type = SEARCH_QUERY['trade_type']
+            sort_filter = SEARCH_QUERY['sort']
+            context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
+                                                                 trade_type=trade_type).order_by(
+                sort_filter)
+        else:
+            coin = object_list['coin']
+            currency = object_list['currency']
+            trade_type = object_list['trade_type']
+            sort_filter = object_list['sort']
+            context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
+                                                                 trade_type=trade_type).order_by(
+                sort_filter)
+
+        paginator = Paginator(context['object_list'], 25)
         page = self.request.GET.get('page')
 
         try:
@@ -36,6 +64,17 @@ class Filter(ListView):
             context['object_list'] = paginator.page(paginator.num_pages)
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = FilterForm(request.POST)
+        if form.is_valid():
+            SEARCH_QUERY = form.cleaned_data
+            cache.set('SEARCH_QUERY', form.cleaned_data, 30)
+            cache.set('REQUEST_FORM', request.POST, 30)
+
+            context = self.get_context_data(object_list=SEARCH_QUERY)
+            return render(request, self.template_name, context=context)
+
 
 """
 class Filter(ListView):
