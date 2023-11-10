@@ -30,11 +30,10 @@ class Filter(ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = FilterForm(REQUEST_FORM)
 
-        # print(f'SEARCH_QUERY {SEARCH_QUERY}')
-
         if not SEARCH_QUERY and not object_list:
             context['object_list'] = TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).order_by(
                 'price')
+            cache.set(object_list, context['object_list'], 30)
 
         elif object_list is None:
             coin = SEARCH_QUERY['coin']

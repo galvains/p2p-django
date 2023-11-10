@@ -6,7 +6,6 @@
     <title>{{ title }}</title>
     <link rel="icon" type="image/png" href="{% static 'app/image/logo.svg' %}">
     <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">-->
 
 </head>
 <body>
@@ -61,8 +60,7 @@
                         url: page_url,
                         type: 'GET',
                         success: (data) => {
-                            // window.scrollTo(pageYOffset, 0);
-                            $('html, body').animate({scrollTop: 0},800);
+                            $('html, body').animate({scrollTop: 0},600);
 		                    // return false;
                             
                             // $('#loader').removeClass('hidden')
@@ -74,7 +72,7 @@
                             $('#loader').addClass('hidden')
                             $('.pagination').append($(data).find('.pagination').html())
 
-                            // }, 300)
+                            // }, 200)
                         }
                     })
                     

@@ -1,0 +1,6 @@
+#header, .module caption{
+    background: #8A76FF;
+}
+#branding h1 a:link, #branding h1 a:visited{
+    color: white;
+}
