@@ -97,25 +97,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'p2p_project.wsgi.application'
 
 # ssh tunnel for connect to remove database
-ssh_tunnel = SSHTunnelForwarder(
-    (os.getenv('SERVER_IP'), int(os.getenv("SSH_PORT"))),
-    ssh_private_key=os.getenv('SSH_PKEY'),
-    ssh_username=os.getenv('USERNAME'),
-    ssh_private_key_password=os.getenv('SSH_PK_PASSWORD'),
-    ssh_password=os.getenv('SSH_PASSWORD'),
-    remote_bind_address=('localhost', int(os.getenv('REMOTE_BIND_ADDRESS'))),
-)
+# ssh_tunnel = SSHTunnelForwarder(
+#     (os.getenv('SERVER_IP'), int(os.getenv("SSH_PORT"))),
+#     ssh_private_key=os.getenv('SSH_PKEY'),
+#     ssh_username=os.getenv('USERNAME'),
+#     ssh_private_key_password=os.getenv('SSH_PK_PASSWORD'),
+#     ssh_password=os.getenv('SSH_PASSWORD'),
+#     remote_bind_address=('localhost', int(os.getenv('REMOTE_BIND_ADDRESS'))),
+# )
 
-ssh_tunnel.start()
+# ssh_tunnel.start()
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv('DATABASE_NAME'),
-        "USER": os.getenv('DATABASE_USERNAME'),
-        "PASSWORD": os.getenv('DATABASE_PASSWORD'),
-        "HOST": "localhost",
-        "PORT": ssh_tunnel.local_bind_port,
+        "NAME": os.getenv('CLR_DB_NAME'),
+        "USER": os.getenv('CLR_DB_USER'),
+        "PASSWORD": os.getenv('CLR_DB_PASS'),
+        "HOST": "database",
+        "PORT": 5432,
     },
 }
 

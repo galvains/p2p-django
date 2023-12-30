@@ -1,0 +1,120 @@
+# List of proxy servers
+proxies:
+  - name: JP1
+    user: 2WknpZuD
+    pass: GgEBBEGs
+    url: http://109.172.23.89:62370
+
+  - name: JP2
+    user: 2WknpZuD
+    pass: GgEBBEGs
+    url: http://193.254.16.65:62324
+
+  - name: JP3
+    user: 2WknpZuD
+    pass: GgEBBEGs
+    url: http://103.171.110.33:64050
+
+  - name: JP4
+    user: 2WknpZuD
+    pass: GgEBBEGs
+    url: http://103.179.96.37:63836
+
+  - name: AUT
+    user: FyNiQyN4B
+    pass: BGpNAAVnz
+    url: http://212.192.247.64:64440
+
+
+
+# List of tickets for parsing by exchanges
+tickets:
+  - - USDT # coin
+    - USD # fiat
+    - BUY # type trade
+
+
+  - - USDT
+    - USD
+    - SELL
+
+  - - USDT
+    - EUR
+    - BUY
+
+  - - USDT
+    - EUR
+    - SELL
+
+  - - BTC
+    - USD
+    - BUY
+
+  - - BTC
+    - USD
+    - SELL
+
+  - - BTC
+    - EUR
+    - BUY
+
+  - - BTC
+    - EUR
+    - SELL
+
+  - - USDC
+    - USD
+    - BUY
+
+  - - USDC
+    - USD
+    - SELL
+
+  - - USDC
+    - EUR
+    - BUY
+
+  - - USDC
+    - EUR
+    - SELL
+
+  - - ETH
+    - USD
+    - BUY
+
+  - - ETH
+    - USD
+    - SELL
+
+  - - ETH
+    - EUR
+    - BUY
+
+  - - ETH
+    - EUR
+    - SELL
+
+# Pause between parsing rounds | normal:(35, 40)
+delay:
+  - 40 # lower
+  - 44 # upper
+
+# Limit of connections to the exchange per unit of time | normal:(25, 29)
+limit:
+  - 24 # lower
+  - 29 # upper
+
+# Page (request) limit for one thread | normal:(150 - 160)
+limit_requests: 90
+
+# Limit of accesses to the exchange in one thread | normal:(4 - 5)
+limit_exchange: 4
+
+# Parity of the circle at which to reload the threads.data | normal:(20)
+lap_of_reload: 20
+
+# Number of pages if the limit is exceeded
+page_limit: 100
+
+# Mode
+DEBUG: False

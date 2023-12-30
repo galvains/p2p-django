@@ -6,6 +6,6 @@ EXPOSE 8000
 
 
 RUN pip install -r /p2p_project/requirements.txt
-RUN adduser --disabled-password galvains
-
-USER galvains
+#RUN adduser --disabled-password galvains
+#
+#USER galvains
