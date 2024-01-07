@@ -7,6 +7,7 @@ from fake_useragent import UserAgent
 from db_model.interface_db import db_insert
 from utils.methods import pay_method_bybit, coin_paxful, type_trade_bybit, trade_type_converter
 
+from db_model.commands import *
 
 async def p2p_parser_binance(session: aiohttp.ClientSession, url: str, headers: dict,
                              json_data: dict, proxy: dict, proxy_auth, connect) -> None:
@@ -41,7 +42,8 @@ async def p2p_parser_binance(session: aiohttp.ClientSession, url: str, headers: 
                 for method in element['adv']['tradeMethods']:
                     data['pay_methods'].append(method['identifier'])
 
-                db_insert(connection=connect, data=data)
+                # db_insert(connection=connect, data=data)
+                await add_ticket_to_db(data)
 
     except AssertionError:
         pass
