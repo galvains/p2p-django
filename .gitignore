@@ -1,5 +1,7 @@
 venv
 .idea
+tmp
+data
 docker-compose.yml
 __pycache__
 .DS_Store

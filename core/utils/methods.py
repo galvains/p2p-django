@@ -1,6 +1,5 @@
 import json
 import requests
-import asyncio
 
 
 async def get_payment_methods():
@@ -12,21 +11,21 @@ async def get_payment_methods():
     for ticket in tickets:
         data[ticket['paymentType']] = ticket['paymentName']
 
-    with open('bybit_payments.json', 'w') as file:
+    with open('tmp/bybit_payments.json', 'w') as file:
         json.dump(data, file, indent=4)
 
 
 def pay_method_bybit(method: str) -> str:
-    with open('bybit_payments.json', 'r') as file:
+    with open('tmp/bybit_payments.json', 'r') as file:
         data = json.load(file)
         return data[method]
 
 
-def trade_type_converter(method):
+def trade_type_converter(method: str) -> bool:
     if method.upper() == 'SELL':
-        return '0'
+        return False
     else:
-        return '1'
+        return True
 
 
 def type_trade_bybit(method):

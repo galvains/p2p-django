@@ -9,7 +9,6 @@ from utils.methods import type_trade_bybit
 
 async def manager(conf_data: dict) -> dict:
     try:
-
         # запросы к биржам, для получения кол-ва страниц (тасков)
         tickets = conf_data['tickets']
         data = {'urls': ['https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search',
@@ -23,7 +22,7 @@ async def manager(conf_data: dict) -> dict:
         for req in tickets:
             data_bin = {"page": 1, "rows": 10, "asset": req[0], "fiat": req[1], "tradeType": req[2]}
             data_byb = {"tokenId": req[0], "currencyId": req[1], "side": type_trade_bybit(req[2]), "page": "1"}
-            data_pax = {"coin": req[0], "fiat": req[1], "trade_type": req[2]}
+            data_pax = {"coin": req[0], "fiat": req[1], "trade_type": req[2].lower()}
             data_okx = {"coin": req[0], "currency": req[1], "trade_type": req[2]}
 
             task_1 = asyncio.create_task(req_to_binance(data=data, info=data_bin, thr=thr))
@@ -31,7 +30,7 @@ async def manager(conf_data: dict) -> dict:
 
             task_2 = asyncio.create_task(req_to_bybit(data=data, info=data_byb, thr=thr))
             tasks.append(task_2)
-            #
+
             if not req[0] == 'ETH':
                 task_3 = asyncio.create_task(req_to_paxful(info=data_pax, thr=thr))
                 tasks.append(task_3)
@@ -85,7 +84,7 @@ async def req_to_bybit(data: dict, info: dict, thr) -> list:
 
 async def req_to_paxful(info: dict, thr) -> list:
     try:
-        thr['paxful'].append({1: [info['coin'], info['fiat'], (info['trade_type'])]})
+        thr['paxful'].append({1: [info['coin'], info['fiat'], info['trade_type']]})
 
         return thr
     except Exception as ex:
@@ -95,7 +94,6 @@ async def req_to_paxful(info: dict, thr) -> list:
 async def req_to_okx(info: dict, thr) -> list:
     try:
         thr['okx'].append({1: [info['coin'], info['currency'], (info['trade_type'])]})
-
         return thr
     except Exception as ex:
         logger.error(f'req_to_okx | {ex}')
@@ -165,15 +163,15 @@ async def distributor(conf_data: dict, counter_to_change: int) -> None:
                     thread.append(list())
 
             # битовая запись конфигурации тредов
-            with open('threads.data', 'wb') as file:
+            with open('tmp/threads.data', 'wb') as file:
                 pickle.dump(thr, file)
 
         # если тредов больше чем прокси, увеличивается лимит запросов и кол-во бирж в треде
         else:
-            conf_data['limit_requests'] = limit_requests + 5
-
             if counter_to_change % 5 == 0:
                 conf_data['limit_exchange'] = limit_exchange + 1
+            else:
+                conf_data['limit_requests'] = limit_requests + 5
 
             counter_to_change += 1
             logger.info(f"The configuration of the threads has been changed | "

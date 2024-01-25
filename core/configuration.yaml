@@ -3,27 +3,27 @@ proxies:
   - name: JP1
     user: 2WknpZuD
     pass: GgEBBEGs
-    url: http://109.172.23.89:62370
+    url: http://213.209.139.114:63758
 
   - name: JP2
     user: 2WknpZuD
     pass: GgEBBEGs
-    url: http://193.254.16.65:62324
+    url: http://82.117.93.18:62828
 
   - name: JP3
     user: 2WknpZuD
     pass: GgEBBEGs
-    url: http://103.171.110.33:64050
+    url: http://45.83.86.40:64562
 
   - name: JP4
     user: 2WknpZuD
     pass: GgEBBEGs
-    url: http://103.179.96.37:63836
+    url: http://92.240.216.237:63906
 
-  - name: AUT
-    user: FyNiQyN4B
-    pass: BGpNAAVnz
-    url: http://212.192.247.64:64440
+  - name: JP5
+    user: 2WknpZuD
+    pass: GgEBBEGs
+    url: http://103.165.76.86:63448
 
 
 
@@ -96,8 +96,8 @@ tickets:
 
 # Pause between parsing rounds | normal:(35, 40)
 delay:
-  - 40 # lower
-  - 44 # upper
+  - 38 # lower
+  - 41 # upper
 
 # Limit of connections to the exchange per unit of time | normal:(25, 29)
 limit:
@@ -105,7 +105,7 @@ limit:
   - 29 # upper
 
 # Page (request) limit for one thread | normal:(150 - 160)
-limit_requests: 90
+limit_requests: 150
 
 # Limit of accesses to the exchange in one thread | normal:(4 - 5)
 limit_exchange: 4

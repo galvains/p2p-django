@@ -1,14 +1,16 @@
-import asyncio
 import yaml
+import asyncio
 
 from loguru import logger
 import collectors.launcher as launcher
+from db_model.interface_db import create_db
 
-logger.add('debug.log', format='{time} | {level} | {message}', level='DEBUG',
+logger.add('tmp/debug.log', format='{time} | {level} | {message}', level='DEBUG',
            rotation='20 mb', compression='zip')
 
 
 async def startup():
+    await create_db()
     with open('configuration.yaml', 'r') as file:
         conf_data = yaml.safe_load(file)
 
