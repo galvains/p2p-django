@@ -28,7 +28,11 @@ class Filter(ListView):
         REQUEST_FORM = cache.get('REQUEST_FORM')
 
         context = super().get_context_data(**kwargs)
-        context['form'] = FilterForm(REQUEST_FORM)
+        if self.request.user.is_authenticated:
+            context['form'] = FilterFormAuth(REQUEST_FORM)
+        else:
+            context['form'] = BaseFilterForm(REQUEST_FORM)
+
         context['title'] = 'Tickets'
 
         if not SEARCH_QUERY and not object_list:
@@ -37,23 +41,51 @@ class Filter(ListView):
             cache.set(object_list, context['object_list'], 30)
 
         elif object_list is None:
-            coin = SEARCH_QUERY['coin']
-            currency = SEARCH_QUERY['currency']
-            trade_type = SEARCH_QUERY['trade_type']
-            sort_filter = SEARCH_QUERY['sort']
-            exchange = SEARCH_QUERY['exchange']
-            context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
-                                                                 trade_type=trade_type, exchange=exchange).order_by(
-                sort_filter)
+            if self.request.user.is_authenticated:
+                coin = SEARCH_QUERY['coin']
+                currency = SEARCH_QUERY['currency']
+                trade_type = SEARCH_QUERY['trade_type']
+                sort_filter = SEARCH_QUERY['sort']
+                exchange = SEARCH_QUERY['exchange']
+                if exchange == "all_exchanges":
+                    context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
+                                                                         trade_type=trade_type).order_by(sort_filter)
+                else:
+                    context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
+                                                                         trade_type=trade_type,
+                                                                         exchange=exchange).order_by(sort_filter)
+            else:
+                coin = SEARCH_QUERY['coin']
+                currency = SEARCH_QUERY['currency']
+                trade_type = SEARCH_QUERY['trade_type']
+                sort_filter = 'price'
+                exchange = 1
+                context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
+                                                                     trade_type=trade_type, exchange=exchange).order_by(
+                    sort_filter)
         else:
-            coin = object_list['coin']
-            currency = object_list['currency']
-            trade_type = object_list['trade_type']
-            sort_filter = object_list['sort']
-            exchange = object_list['exchange']
-            context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
-                                                                 trade_type=trade_type, exchange=exchange).order_by(
-                sort_filter)
+            if self.request.user.is_authenticated:
+                coin = object_list['coin']
+                currency = object_list['currency']
+                trade_type = object_list['trade_type']
+                sort_filter = object_list['sort']
+                exchange = object_list['exchange']
+                if exchange == "all_exchanges":
+                    context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
+                                                                         trade_type=trade_type).order_by(sort_filter)
+                else:
+                    context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
+                                                                         trade_type=trade_type,
+                                                                         exchange=exchange).order_by(sort_filter)
+            else:
+                coin = object_list['coin']
+                currency = object_list['currency']
+                trade_type = object_list['trade_type']
+                sort_filter = 'price'
+                exchange = 1
+                context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
+                                                                     trade_type=trade_type, exchange=exchange).order_by(
+                    sort_filter)
 
         paginator = Paginator(context['object_list'], 25)
         page = self.request.GET.get('page')
@@ -64,11 +96,15 @@ class Filter(ListView):
             context['object_list'] = paginator.page(1)
         except EmptyPage:
             context['object_list'] = paginator.page(paginator.num_pages)
-
         return context
 
     def post(self, request, *args, **kwargs):
-        form = FilterForm(request.POST)
+
+        if self.request.user.is_authenticated:
+            form = FilterFormAuth(request.POST)
+        else:
+            form = BaseFilterForm(request.POST)
+
         if form.is_valid():
             SEARCH_QUERY = form.cleaned_data
             cache.set('SEARCH_QUERY', form.cleaned_data, 30)
@@ -95,6 +131,8 @@ class Login(LoginView):
     template_name = 'app/login.html'
 
     def get_success_url(self):
+        cache.delete('SEARCH_QUERY')
+        cache.delete('REQUEST_FORM')
         return reverse_lazy('filter')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -124,6 +162,8 @@ class Fail(TemplateView):
 
 
 def logout_user(request):
+    cache.delete('SEARCH_QUERY')
+    cache.delete('REQUEST_FORM')
     logout(request)
     return redirect('filter')
 

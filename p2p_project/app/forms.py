@@ -7,7 +7,7 @@ from captcha.fields import ReCaptchaField
 from .models import *
 
 
-class FilterForm(forms.ModelForm):
+class BaseFilterForm(forms.ModelForm):
     CHOICES_COINS = [
         ('USDT', 'USDT'),
         ('BTC', 'BTC'),
@@ -22,6 +22,17 @@ class FilterForm(forms.ModelForm):
         (True, 'BUY'),
         (False, 'SELL'),
     ]
+
+    coin = forms.ChoiceField(choices=CHOICES_COINS, widget=forms.Select(attrs={'class': 'select'}))
+    currency = forms.ChoiceField(choices=CHOICES_CURRENCY, widget=forms.Select(attrs={'class': 'select'}))
+    trade_type = forms.ChoiceField(choices=CHOICES_TRADE_TYPE, widget=forms.Select(attrs={'class': 'select'}))
+
+    class Meta:
+        model = TicketsTable
+        fields = ('coin', 'currency', 'trade_type')
+
+
+class FilterFormAuth(BaseFilterForm):
     CHOICES_SORT = [
         ('price', 'Low price'),
         ('-price', 'High price'),
@@ -29,21 +40,22 @@ class FilterForm(forms.ModelForm):
         ('-time_create', 'Latest'),
     ]
     CHOICES_EXCHANGES = [
+        ('all_exchanges', 'All'),
         (1, 'Binance'),
         (2, 'Bybit'),
         (3, 'Paxful'),
         (4, 'OKX'),
     ]
 
-    coin = forms.ChoiceField(choices=CHOICES_COINS, widget=forms.Select(attrs={'class': 'select'}))
-    currency = forms.ChoiceField(choices=CHOICES_CURRENCY, widget=forms.Select(attrs={'class': 'select'}))
-    trade_type = forms.ChoiceField(choices=CHOICES_TRADE_TYPE, widget=forms.Select(attrs={'class': 'select'}))
     exchange = forms.ChoiceField(choices=CHOICES_EXCHANGES, widget=forms.Select(attrs={'class': 'select'}))
     sort = forms.ChoiceField(choices=CHOICES_SORT, widget=forms.Select(attrs={'class': 'select'}))
 
-    class Meta:
-        model = TicketsTable
-        fields = ('coin', 'currency', 'trade_type')
+
+class FilterFormPaid(FilterFormAuth):
+    """
+    Filter form for paid users
+    """
+    pass
 
 
 class RegisterUserForm(UserCreationForm):
