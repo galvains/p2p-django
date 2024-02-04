@@ -1,4 +1,9 @@
-from .models import *
-from django.db.models import *
+import re
 
-from .forms import *
+def validator_username(value: str) -> bool:
+    regex = re.compile(r"^[\w.@+-]+\Z")
+
+    if regex.match(value):
+        return False
+    return True
+

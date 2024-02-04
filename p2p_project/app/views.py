@@ -3,10 +3,12 @@ import os
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, TemplateView, CreateView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.cache import cache
+from django.http import JsonResponse
+from django.contrib.auth.models import User as UserTable
 
 from .models import *
 from .utils import *
@@ -58,11 +60,11 @@ class Filter(ListView):
                 coin = SEARCH_QUERY['coin']
                 currency = SEARCH_QUERY['currency']
                 trade_type = SEARCH_QUERY['trade_type']
-                sort_filter = 'price'
+                sort_filter = 'time_create'
                 exchange = 1
                 context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
-                                                                     trade_type=trade_type, exchange=exchange).order_by(
-                    sort_filter)
+                                                                     trade_type=trade_type,
+                                                                     exchange=exchange).order_by(sort_filter)
         else:
             if self.request.user.is_authenticated:
                 coin = object_list['coin']
@@ -81,11 +83,11 @@ class Filter(ListView):
                 coin = object_list['coin']
                 currency = object_list['currency']
                 trade_type = object_list['trade_type']
-                sort_filter = 'price'
+                sort_filter = 'time_create'
                 exchange = 1
                 context['object_list'] = TicketsTable.objects.filter(coin=coin, currency=currency,
-                                                                     trade_type=trade_type, exchange=exchange).order_by(
-                    sort_filter)
+                                                                     trade_type=trade_type,
+                                                                     exchange=exchange).order_by(sort_filter)
 
         paginator = Paginator(context['object_list'], 25)
         page = self.request.GET.get('page')
@@ -116,8 +118,12 @@ class Filter(ListView):
 
 class Register(CreateView):
     form_class = RegisterUserForm
-    template_name = 'app/login.html'
-    success_url = reverse_lazy('filter')
+    template_name = 'app/register.html'
+
+    def get_success_url(self):
+        cache.delete('SEARCH_QUERY')
+        cache.delete('REQUEST_FORM')
+        return reverse('login')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -166,6 +172,22 @@ def logout_user(request):
     cache.delete('REQUEST_FORM')
     logout(request)
     return redirect('filter')
+
+
+def validate_username(request):
+    username = request.GET.get('username', None).lower()
+    data = {
+        'is_taken': UserTable.objects.filter(username=username).exists(),
+        'valid_symbol': validator_username(username),
+    }
+    return JsonResponse(data)
+
+def validate_email(request):
+    email = request.GET.get('email', None)
+    data = {
+        'is_taken': UserTable.objects.filter(email=email).exists(),
+    }
+    return JsonResponse(data)
 
 
 def custom_page_not_found_view(request, exception):

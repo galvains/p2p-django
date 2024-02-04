@@ -50,7 +50,6 @@ class FilterFormAuth(BaseFilterForm):
     exchange = forms.ChoiceField(choices=CHOICES_EXCHANGES, widget=forms.Select(attrs={'class': 'select'}))
     sort = forms.ChoiceField(choices=CHOICES_SORT, widget=forms.Select(attrs={'class': 'select'}))
 
-
 class FilterFormPaid(FilterFormAuth):
     """
     Filter form for paid users

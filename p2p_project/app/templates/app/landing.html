@@ -20,7 +20,7 @@
         {% if request.user.is_authenticated %}
         <div>{{ user.username }}</div>
         <div><a href="{% url 'logout' %}">
-            <img id="logout" src="{% static 'app/image/log-out.png' %}" alt="logout">
+            <img id="logout" src="{% static 'app/image/logout.png' %}" alt="logout">
         </a>
         </div>
         {% else %}

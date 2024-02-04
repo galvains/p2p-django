@@ -11,6 +11,8 @@ urlpatterns = [
     path('donate/', Donate.as_view(), name='donate'),
     path('successful-payment/', Success.as_view(), name='success'),
     path('failure-payment/', Fail.as_view(), name='fail'),
+    path('register/validate_username/', validate_username, name='validate_username'),
+    path('register/validate_email/', validate_email, name='validate_email'),
     path('__debug__/', include(debug_toolbar.urls)),
 ]
 

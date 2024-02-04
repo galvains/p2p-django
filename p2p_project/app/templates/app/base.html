@@ -18,7 +18,7 @@
         {% if request.user.is_authenticated %}
         <div>{{ user.username }}</div>
         <div><a href="{% url 'logout' %}">
-            <img id="logout" src="{% static 'app/image/log-out.png' %}" alt="logout">
+            <img id="logout" src="{% static 'app/image/logout.png' %}" alt="logout">
         </a>
         </div>
         {% else %}
@@ -43,53 +43,9 @@
 {% block content %}
 {% endblock %}
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 {% block js %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script type="text/javascript">
-        function ajaxPagination() {
-            $(document).ready(function() {
-            $('.pagination a.page-link').each((index, el) => {
-                $(el).click((e) => {
-
-                    e.preventDefault()
-                    let page_url = $(el).attr('href')
-                    let loader = document.getElementById('loader')
-                    console.log(page_url)
-
-                    $.ajax({
-                        url: page_url,
-                        type: 'GET',
-                        success: (data) => {
-                            $('html, body').animate({scrollTop: 0},600);
-		                    // return false;
-                            
-                            // $('#loader').removeClass('hidden')
-                            $('#deals').empty()
-                            $('.pagination').empty()
-                            // setTimeout(() => {
-   
-                            $('#deals').append($(data).find('#deals').html())
-                            $('#loader').addClass('hidden')
-                            $('.pagination').append($(data).find('.pagination').html())
-
-                            // }, 200)
-                        }
-                    })
-                    
-                })
-            })
-        })
-        }
-
-        $(document).ready(function(){
-            ajaxPagination()
-        })
-
-        $(document).ajaxStop(function(){
-            ajaxPagination()
-        })
-    </script>
-
 {% endblock %}
 
 <footer>

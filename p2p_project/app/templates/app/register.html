@@ -7,12 +7,13 @@
     <div class="registration-form">
         <form method="post" id="form">
             {% csrf_token %}
-
             <h3>{{ data }} user</h3>
 
             {% for f in form %}
-            <div id="{{ f.name }}">{{ f }}</div>
-
+            <div id="{{ f.name }}" onchange="toggleButton()">{{ f }}</div>
+            {% for error in f.errors %}
+            <div class="errors-form">{{ error }}</div>
+            {% endfor %}
             {% endfor %}
 
             {% if form.subject.errors %}
@@ -22,11 +23,15 @@
                 {% endfor %}
             </ol>
             {% endif %}
-            <button type="submit" id="submitButton" >{{ data }}</button>
+            <button type="submit" id="submitButton" disabled>{{ data }}</button>
         </form>
     </div>
 </div>
 
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'app/js/reg.js' %}"></script>
 {% endblock %}
 
 
