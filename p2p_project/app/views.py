@@ -38,8 +38,8 @@ class Filter(ListView):
         context['title'] = 'Tickets'
 
         if not SEARCH_QUERY and not object_list:
-            context['object_list'] = TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True).order_by(
-                'price')
+            context['object_list'] = TicketsTable.objects.filter(coin='USDT', currency='USD', trade_type=True,
+                                                                 exchange=1).order_by('time_create')
             cache.set(object_list, context['object_list'], 30)
 
         elif object_list is None:
@@ -142,6 +142,7 @@ class Login(LoginView):
         return reverse_lazy('filter')
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        logout_user(self.request)
         context = super().get_context_data(**kwargs)
         context['data'] = 'Login'
         context['title'] = 'Login'
@@ -181,6 +182,7 @@ def validate_username(request):
         'valid_symbol': validator_username(username),
     }
     return JsonResponse(data)
+
 
 def validate_email(request):
     email = request.GET.get('email', None)
