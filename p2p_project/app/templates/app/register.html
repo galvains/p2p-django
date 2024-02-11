@@ -5,25 +5,15 @@
 
 <div class="reg">
     <div class="registration-form">
-        <form method="post" id="form">
-            {% csrf_token %}
-            <h3>{{ data }} user</h3>
+        <form method="post" id="form" action={% url 'register' %}>
+        {% csrf_token %}
+        <h3>{{ data }} user</h3>
 
-            {% for f in form %}
-            <div id="{{ f.name }}" onchange="toggleButton()">{{ f }}</div>
-            {% for error in f.errors %}
-            <div class="errors-form">{{ error }}</div>
-            {% endfor %}
-            {% endfor %}
+        {% for f in form %}
+        <div id="{{ f.name }}" onchange="toggleButton()">{{ f }}</div>
+        {% endfor %}
 
-            {% if form.subject.errors %}
-            <ol class="errors-form">
-                {% for error in form.subject.errors %}
-                <li><strong>{{ error }}</strong></li>
-                {% endfor %}
-            </ol>
-            {% endif %}
-            <button type="submit" id="submitButton" disabled>{{ data }}</button>
+        <button type="submit" id="submitButton" disabled>{{ data }}</button>
         </form>
     </div>
 </div>

@@ -1,18 +1,19 @@
 import os
 
-from django.contrib.auth import logout
+from django.contrib import auth
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, TemplateView, CreateView
+from django.views.generic import ListView, TemplateView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.cache import cache
 from django.http import JsonResponse
-from django.contrib.auth.models import User as UserTable
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
 
-from .models import *
-from .utils import *
-from .forms import *
+from .models import User, TicketsTable
+from .utils import generate_token, validator_username, send_activation_email
+from .forms import FilterFormAuth, BaseFilterForm, LoginUserForm, RegisterUserForm
 
 
 class Home(TemplateView):
@@ -111,25 +112,8 @@ class Filter(ListView):
             SEARCH_QUERY = form.cleaned_data
             cache.set('SEARCH_QUERY', form.cleaned_data, 30)
             cache.set('REQUEST_FORM', request.POST, 30)
-
             context = self.get_context_data(object_list=SEARCH_QUERY)
             return render(request, self.template_name, context=context)
-
-
-class Register(CreateView):
-    form_class = RegisterUserForm
-    template_name = 'app/register.html'
-
-    def get_success_url(self):
-        cache.delete('SEARCH_QUERY')
-        cache.delete('REQUEST_FORM')
-        return reverse('login')
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['data'] = 'Register'
-        context['title'] = 'Register'
-        return context
 
 
 class Login(LoginView):
@@ -160,6 +144,10 @@ class Donate(TemplateView):
         return context
 
 
+class ActivationInfo(TemplateView):
+    template_name = 'app/activation_info.html'
+
+
 class Success(TemplateView):
     template_name = 'app/successful-payment.html'
 
@@ -168,17 +156,51 @@ class Fail(TemplateView):
     template_name = 'app/failure-payment.html'
 
 
+def register_user(request):
+    context = dict()
+    context['data'] = 'Register'
+    context['title'] = 'Register'
+
+    if request.method == "POST":
+        context['form'] = RegisterUserForm(request.POST)
+        if context['form'].is_valid():
+            cache.delete('SEARCH_QUERY')
+            cache.delete('REQUEST_FORM')
+
+            user = context['form'].save(commit=False)
+            user.username = context['form'].cleaned_data['username']
+            user.email = context['form'].cleaned_data['email']
+            user.save()
+            user.set_password(context['form'].cleaned_data['password1'])
+            user.save()
+
+            send_activation_email(user, request)
+            return redirect('activation-info')
+    else:
+        context['form'] = RegisterUserForm()
+
+    return render(request, 'app/register.html', context=context)
+
+
 def logout_user(request):
     cache.delete('SEARCH_QUERY')
     cache.delete('REQUEST_FORM')
-    logout(request)
+    auth.logout(request)
     return redirect('filter')
+
+
+def validate_login(request):
+    username = request.GET.get('username', None).lower()
+    data = {
+        'is_taken': User.objects.filter(username=username).exists(),
+    }
+    return JsonResponse(data)
 
 
 def validate_username(request):
     username = request.GET.get('username', None).lower()
     data = {
-        'is_taken': UserTable.objects.filter(username=username).exists(),
+        'is_taken': User.objects.filter(username=username).exists(),
         'valid_symbol': validator_username(username),
     }
     return JsonResponse(data)
@@ -187,9 +209,48 @@ def validate_username(request):
 def validate_email(request):
     email = request.GET.get('email', None)
     data = {
-        'is_taken': UserTable.objects.filter(email=email).exists(),
+        'is_taken': User.objects.filter(email=email).exists(),
     }
     return JsonResponse(data)
+
+
+def validate_password(request):
+    password1 = request.GET.get('password1', None)
+    password2 = request.GET.get('password2', None)
+    similar = False
+    length = False
+    digits = True
+
+    if password1 and password2 and password1 == password2:
+        similar = True
+    if len(password1) >= 8:
+        length = True
+    if password1.isdigit():
+        digits = False
+
+    data = {
+        'is_similar': similar,
+        'is_length': length,
+        'is_digits': digits,
+    }
+
+    return JsonResponse(data)
+
+
+def activate_user(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+
+    except Exception as e:
+        user = None
+
+    if user and generate_token.check_token(user, token):
+        user.is_email_verified = True
+        user.save()
+
+        return redirect(reverse('login'))
+    return render(request, 'activate-failed.html', {'user': user})
 
 
 def custom_page_not_found_view(request, exception):

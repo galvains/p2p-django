@@ -1,6 +1,6 @@
 #!/bin/sh
 
-python manage.py migrate
+python manage.py migrate app
 
 rm -rf static
 python manage.py collectstatic

@@ -15,18 +15,16 @@
 
             {% endfor %}
 
-            {% if form.subject.errors %}
-            <ol class="errors-form">
-                {% for error in form.subject.errors %}
-                <li><strong>{{ error }}</strong></li>
-                {% endfor %}
-            </ol>
-            {% endif %}
-            <button type="submit" id="submitButton" >{{ data }}</button>
+            <button type="submit" id="submitButton">{{ data }}</button>
+            <p><a href="{% url 'password_reset' %}">Forgot password?</a></p>
         </form>
     </div>
 </div>
 
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'app/js/login.js' %}"></script>
 {% endblock %}
 
 
