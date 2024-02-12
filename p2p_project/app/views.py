@@ -192,7 +192,8 @@ def logout_user(request):
 def validate_login(request):
     username = request.GET.get('username', None).lower()
     data = {
-        'is_taken': User.objects.filter(username=username).exists(),
+        'is_taken_username': User.objects.filter(email=username).exists(),
+        'is_taken_email': User.objects.filter(username=username).exists(),
     }
     return JsonResponse(data)
 

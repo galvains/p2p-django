@@ -11,8 +11,8 @@
                     <div class="menu">
                         {% csrf_token %}
                         {% for f in form %}
-                        <p style="margin:0; font-family: usuzi; color: #858585; font-size: 10px;">{{ f.label }}:</p>
-                        <div style="margin: 7px;">
+                        <p class="ticket-filter">{{ f.label }}:</p>
+                        <div class="filter-drop-menu">
                             {{ f }}
                         </div>
 
@@ -27,7 +27,7 @@
             </header>
 
 
-<!--            <div id="loader" class="loader hidden"></div>-->
+            <!--            <div id="loader" class="loader hidden"></div>-->
 
             <div id="deals">
                 {% if object_list %}
@@ -114,43 +114,44 @@
             </div>
 
             {% if object_list.paginator.num_pages > 1 %}
-                <div class="footer">
-                    <div class="pagination">
+            <div class="footer">
+                <div class="pagination">
 
-                        {% if object_list.has_previous %}
-                        <a class="page-link" href="?page={{ object_list.previous_page_number }}">&#8249;</a>
-                        {% endif %}
+                    {% if object_list.has_previous %}
+                    <a class="page-link" href="?page={{ object_list.previous_page_number }}">&#8249;</a>
+                    {% endif %}
 
-                        {% if object_list.number > 3 %}
-                        <a class="page-link" href="?page=1">1</a>
-                        {% if object_list.number > 4 %}
-                        <span class="ellipsis">...</span>
-                        {% endif %}
-                        {% endif %}
+                    {% if object_list.number > 3 %}
+                    <a class="page-link" href="?page=1">1</a>
+                    {% if object_list.number > 4 %}
+                    <span class="ellipsis">...</span>
+                    {% endif %}
+                    {% endif %}
 
-                        {% for i in object_list.paginator.page_range %}
-                        {% if i > object_list.number|add:'-2' and i < object_list.number|add:'2' %}
-                        {% if object_list.number == i %}
-                        <span class="current-page">{{ i }}</span>
-                        {% else %}
-                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-                        {% endif %}
-                        {% endif %}
-                        {% endfor %}
+                    {% for i in object_list.paginator.page_range %}
+                    {% if i > object_list.number|add:'-2' and i < object_list.number|add:'2' %}
+                    {% if object_list.number == i %}
+                    <span class="current-page">{{ i }}</span>
+                    {% else %}
+                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
 
-                        {% if object_list.number < object_list.paginator.num_pages|add:'-2' %}
-                        {% if object_list.number < object_list.paginator.num_pages|add:'-3' %}
-                        <span class="ellipsis">...</span>
-                        {% endif %}
-                        <a class="page-link" href="?page={{ object_list.paginator.num_pages }}">{{ object_list.paginator.num_pages }}</a>
-                        {% endif %}
+                    {% if object_list.number < object_list.paginator.num_pages|add:'-2' %}
+                    {% if object_list.number < object_list.paginator.num_pages|add:'-3' %}
+                    <span class="ellipsis">...</span>
+                    {% endif %}
+                    <a class="page-link" href="?page={{ object_list.paginator.num_pages }}">{{
+                        object_list.paginator.num_pages }}</a>
+                    {% endif %}
 
-                        {% if object_list.has_next %}
-                        <a class="page-link" href="?page={{ object_list.next_page_number }}">&#8250;</a>
-                        {% endif %}
+                    {% if object_list.has_next %}
+                    <a class="page-link" href="?page={{ object_list.next_page_number }}">&#8250;</a>
+                    {% endif %}
 
-                    </div>
                 </div>
+            </div>
             {% endif %}
 
         </section>
@@ -159,49 +160,49 @@
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript">
-        function ajaxPagination() {
-            $(document).ready(function() {
-            $('.pagination a.page-link').each((index, el) => {
-                $(el).click((e) => {
+<script type="text/javascript">
+    function ajaxPagination() {
+        $(document).ready(function() {
+        $('.pagination a.page-link').each((index, el) => {
+            $(el).click((e) => {
 
-                    e.preventDefault()
-                    let page_url = $(el).attr('href')
-                    let loader = document.getElementById('loader')
-                    console.log(page_url)
+                e.preventDefault()
+                let page_url = $(el).attr('href')
+                let loader = document.getElementById('loader')
+                console.log(page_url)
 
-                    $.ajax({
-                        url: page_url,
-                        type: 'GET',
-                        success: (data) => {
-                            $('html, body').animate({scrollTop: 0},300);
-		                    // return false;
+                $.ajax({
+                    url: page_url,
+                    type: 'GET',
+                    success: (data) => {
+                        $('html, body').animate({scrollTop: 0},300);
+                        // return false;
 
-                            // $('#loader').removeClass('hidden')
-                            $('#deals').empty()
-                            $('.pagination').empty()
-                            // setTimeout(() => {
+                        // $('#loader').removeClass('hidden')
+                        $('#deals').empty()
+                        $('.pagination').empty()
+                        // setTimeout(() => {
 
-                            $('#deals').append($(data).find('#deals').html())
-                            $('#loader').addClass('hidden')
-                            $('.pagination').append($(data).find('.pagination').html())
+                        $('#deals').append($(data).find('#deals').html())
+                        $('#loader').addClass('hidden')
+                        $('.pagination').append($(data).find('.pagination').html())
 
-                            // }, 200)
-                        }
-                    })
-
+                        // }, 200)
+                    }
                 })
+
             })
         })
-        }
+    })
+    }
 
-        $(document).ready(function(){
-            ajaxPagination()
-        })
+    $(document).ready(function(){
+        ajaxPagination()
+    })
 
-        $(document).ajaxStop(function(){
-            ajaxPagination()
-        })
-    </script>
+    $(document).ajaxStop(function(){
+        ajaxPagination()
+    })
+</script>
 
 {% endblock %}

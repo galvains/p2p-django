@@ -16,6 +16,15 @@
 
     <div class="user-button">
         {% if request.user.is_authenticated %}
+        {% if request.user.is_email_verified %}
+        <div title="Verified account">
+            <img id="checked" src="{% static 'app/image/checked.png' %}" alt="checked">
+        </div>
+        {% else %}
+        <div title="Pending confirmation">
+            <img id="stopwatch" src="{% static 'app/image/stopwatch.png' %}" alt="stopwatch">
+        </div>
+        {% endif %}
         <div>{{ user.username }}</div>
         <div><a href="{% url 'logout' %}">
             <img id="logout" src="{% static 'app/image/logout.png' %}" alt="logout">

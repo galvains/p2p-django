@@ -7,7 +7,7 @@ $("#id_username").change(function() {
         },
         dataType: 'json',
         success: function(data) {
-            if (username && !data.is_taken) {
+            if (username && (!data.is_taken_email && !data.is_taken_username)) {
                 $('#user_error').remove();
                 $("#id_username").css('border-color', '#ff6666');
                 $("#username").append('<div class="custom-errors-form" id="user_error">This user does not exist.</div>');
